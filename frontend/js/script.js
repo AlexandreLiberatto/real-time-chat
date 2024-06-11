@@ -17,7 +17,7 @@ const colors = [
 ]
 
 const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() = colors.length)
+    const randomIndex = Math.floor(Math.random() * colors.length)
     return colors[randomIndex]
 }
 
@@ -30,6 +30,7 @@ const handleSubmit = (event) => {
 
     user.id = crypto.randomUUID()
     user.name = loginInput.value 
+    user.color = getRandomColor()
 
     console.log(user)
 }
