@@ -23,6 +23,8 @@ const colors = [
 
 const user = { id: "", name: "", color: "" }
 
+let websocket
+
 const getRandomColor = () => {
     const randomIndex = Math.floor(Math.random() * colors.length)
     return colors[randomIndex]
@@ -38,6 +40,8 @@ const handleSubmit = (event) => {
 
     login.style.display = "none"
     chat.style.display = "flex"
+
+    websocket = new WebSocket("ws://localhost:8080")
 
     console.log(user)
 }
