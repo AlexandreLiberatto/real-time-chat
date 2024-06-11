@@ -30,6 +30,7 @@ body {
     background-color: #212121;
     border-radius: 5px;
     padding: 20px;
+    display: none;
 }
 
 .login > h2 {
