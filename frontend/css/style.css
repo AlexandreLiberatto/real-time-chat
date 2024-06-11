@@ -88,6 +88,11 @@ body {
 
 .chat__messages {
    flex-grow: 1;
+   padding: 30px 30px 90px;
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-end;
+
 }
 
 .chat__form {
@@ -122,4 +127,21 @@ body {
 
 .chat__button > i {
     font-size: 1.8rem;
+}
+
+.chat__messages > div {
+    padding: 10px;
+    width: 100%;
+    max-width: 250px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    line-height: 22px;
+}
+
+.message--self {
+    background-color: #f2f2f2;
+    color: #121212;
+    border-radius: 10px 10px 0 10px;
+    align-self: flex-end;
 }
