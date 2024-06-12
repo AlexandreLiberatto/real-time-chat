@@ -30,8 +30,12 @@ const getRandomColor = () => {
     return colors[randomIndex]
 }
 
+const processMessage = ({ data }) => {
+    alert(data)
+}
 
-const handleSubmit = (event) => {
+
+const handleLogin = (event) => {
     event.preventDefault()
 
     user.id = crypto.randomUUID()
@@ -42,8 +46,8 @@ const handleSubmit = (event) => {
     chat.style.display = "flex"
 
     websocket = new WebSocket("ws://localhost:8080")
+    websocket.onmessage = processMessage
 
-    console.log(user)
 }
 
-loginForm.addEventListener("submit", handleSubmit)
+loginForm.addEventListener("submit", handleLogin)
