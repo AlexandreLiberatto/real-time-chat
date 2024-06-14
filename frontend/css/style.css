@@ -1,5 +1,3 @@
-
-
 * {
     margin: 0;
     padding: 0;
@@ -73,8 +71,7 @@ body {
 
 .login__button:hover {
     background-color: #fff;
-    border: 2px solid rgb(104, 236, 133);;
-
+    border: 2px solid rgb(104, 236, 133);
 }
 
 .chat {
@@ -85,13 +82,22 @@ body {
     justify-content: space-between;
 }
 
+.chat__online-users {
+    background-color: #191919;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    position: fixed;
+    width: 100%;
+}
+
 .chat__messages {
    flex-grow: 1;
    padding: 30px 30px 90px;
    display: flex;
    flex-direction: column;
    justify-content: flex-end;
-
 }
 
 .chat__form {
@@ -157,4 +163,13 @@ body {
     margin-bottom: 15px;
     font-weight: 700;
     color: cadetblue;
+}
+
+.message--system {
+    background-color: #454545;
+    color: #f2f2f2;
+    border-radius: 10px;
+    align-self: center;
+    padding: 5px 10px;
+    font-weight: 700;
 }
