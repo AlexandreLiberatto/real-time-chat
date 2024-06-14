@@ -10,7 +10,10 @@
 }
 
 body {
-    background: url(../imagens/background.png);
+    background: url(../imagens/capa.png),
+                url(../imagens/ruido.png),
+                linear-gradient(50deg, #161616, #1ae608, #121212);
+    background-attachment: fixed;
     color: #f2f2f2;
 }
 
@@ -84,6 +87,7 @@ body {
 
 .chat__online-users {
     background-color: #191919;
+    color: green;
     padding: 10px 20px;
     text-align: center;
     font-size: 1rem;
