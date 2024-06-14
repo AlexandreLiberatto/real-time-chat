@@ -3,7 +3,8 @@ const dotenv = require("dotenv")
 
 dotenv.config()
 
-const wss = new WebSocketServer({ port: process.env.PORT || 8080 })
+const port = process.env.PORT || 8080
+const wss = new WebSocketServer({ port })
 
 const users = new Map()
 
@@ -60,5 +61,5 @@ wss.on("connection", (ws) => {
         }
     })
 
-    console.log("Você está conectado!")
+    console.log("Servidor WebSocket está rodando na porta:", port)
 })
