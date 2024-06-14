@@ -1,93 +1,3 @@
-// login elements
-const login = document.querySelector(".login")
-const loginForm = login.querySelector(".login__form")
-const loginInput = login.querySelector(".login__input")
-
-// chat elements
-const chat = document.querySelector(".chat")
-const chatForm = chat.querySelector(".chat__form")
-const chatInput = chat.querySelector(".chat__input")
-const chatMessages = chat.querySelector(".chat__messages")
-
-const colors = [
-    "cadetblue",
-    "darkgoldenrod",
-    "cornflowerblue",
-    "darkkhaki",
-    "hotpink",
-    "gold"
-]
-
-const user = { id: "", name: "", color: "" }
-
-let websocket
-let onlineUsers = 0
-
-const createMessageSelfElement = (content) => {
-    const div = document.createElement("div")
-    div.classList.add("message--self")
-    div.innerHTML = content
-    return div
-}
-
-const createMessageOtherElement = (content, sender, senderColor) => {
-    const div = document.createElement("div")
-    const span = document.createElement("span")
-    div.classList.add("message--other")
-    span.classList.add("message--sender")
-    span.style.color = senderColor
-    span.innerHTML = sender
-    div.appendChild(span)
-    div.innerHTML += content
-    return div
-}
-
-const createSystemMessageElement = (content) => {
-    const div = document.createElement("div")
-    div.classList.add("message--system")
-    div.innerHTML = content
-    return div
-}
-
-const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length)
-    return colors[randomIndex]
-}
-
-const scrollScreen = () => {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-    })
-}
-
-const processMessage = ({ data }) => {
-    const { type, userId, userName, userColor, content, userCount } = JSON.parse(data)
-    let message
-
-    if (type === "message") {
-        message = userId == user.id
-            ? createMessageSelfElement(content)
-            : createMessageOtherElement(content, userName, userColor)
-    } else if (type === "user-joined") {
-        message = createSystemMessageElement(`${userName} entrou no chat.`)
-        onlineUsers = userCount
-        updateOnlineUsers()
-    } else if (type === "user-left") {
-        message = createSystemMessageElement(`${userName} saiu do chat.`)
-        onlineUsers = userCount
-        updateOnlineUsers()
-    }
-
-    chatMessages.appendChild(message)
-    scrollScreen()
-}
-
-const updateOnlineUsers = () => {
-    const onlineUsersElement = document.querySelector(".chat__online-users")
-    onlineUsersElement.innerText = `Usuários online: ${onlineUsers}`
-}
-
 const handleLogin = (event) => {
     event.preventDefault()
 
@@ -98,7 +8,10 @@ const handleLogin = (event) => {
     login.style.display = "none"
     chat.style.display = "flex"
 
-    websocket = new WebSocket("ws://localhost:8080")  // Certifique-se de usar a URL correta para seu WebSocket
+    // Use the provided backend URL for WebSocket connection
+    const wsUrl = "wss://real-time-chat-backend-xsj5.onrender.com"
+
+    websocket = new WebSocket(wsUrl)
     websocket.onmessage = processMessage
 
     websocket.onopen = () => {
@@ -110,20 +23,47 @@ const handleLogin = (event) => {
     })
 }
 
-const sendMessage = (event) => {
-    event.preventDefault()
+const processMessage = (event) => {
+    const message = JSON.parse(event.data)
+    const messageElement = document.createElement("div")
 
+    if (message.type === "user-joined") {
+        messageElement.classList.add("message--system")
+        messageElement.textContent = `${message.userName} entrou no chat.`
+        updateOnlineUsers(message.userCount)
+    } else if (message.type === "user-left") {
+        messageElement.classList.add("message--system")
+        messageElement.textContent = `${message.userName} saiu do chat.`
+        updateOnlineUsers(message.userCount)
+    } else {
+        const senderElement = document.createElement("span")
+        senderElement.classList.add("message--sender")
+        senderElement.textContent = message.userName
+
+        messageElement.classList.add(message.userId === user.id ? "message--self" : "message--other")
+        messageElement.textContent = message.text
+        messageElement.prepend(senderElement)
+    }
+
+    chatMessages.appendChild(messageElement)
+    chatMessages.scrollTop = chatMessages.scrollHeight
+}
+
+const updateOnlineUsers = (count) => {
+    const onlineUsersElement = document.querySelector(".chat__online-users")
+    onlineUsersElement.textContent = `Usuários online: ${count}`
+}
+
+document.querySelector(".login__form").addEventListener("submit", handleLogin)
+document.querySelector(".chat__form").addEventListener("submit", (event) => {
+    event.preventDefault()
+    const messageInput = document.querySelector(".chat__input")
     const message = {
         type: "message",
         userId: user.id,
         userName: user.name,
-        userColor: user.color,
-        content: chatInput.value
+        text: messageInput.value
     }
-
     websocket.send(JSON.stringify(message))
-    chatInput.value = ""
-}
-
-loginForm.addEventListener("submit", handleLogin)
-chatForm.addEventListener("submit", sendMessage)
+    messageInput.value = ""
+})
